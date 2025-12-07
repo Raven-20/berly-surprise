@@ -14,7 +14,7 @@
       color: #333;
       text-align: center;
       transition: background 0.5s;
-      overflow-x: hidden; 
+      overflow-x: hidden; /* Prevents horizontal scrolling caused by stray elements */
     }
 
     /* --- Landing Page (Splash Screen) Styles --- */
@@ -35,7 +35,7 @@
 
     #landing-page h1 {
       color: white;
-      font-size: 4rem;
+      font-size: 4rem; 
       margin-bottom: 30px;
       text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
     }
@@ -105,13 +105,12 @@
         border-radius: 10px;
         line-height: 1.7;
         text-align: left;
-        min-height: 150px; 
+        min-height: 150px;
         opacity: 0;
         transition: opacity 0.5s;
     }
     .message-tab-content.active {
-        display: block;
-        opacity: 1;
+        display: block;    
     }
     .message-tab-buttons {
         display: flex;
@@ -160,6 +159,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s, transform 0.1s;
+      white-space: nowrap; /* Prevents button text from wrapping */
     }
     .tab-button:hover {
       background: #ce93d8;
@@ -182,10 +182,11 @@
     
     .slideshow-container {
         position: relative;
-        max-width: 650px; /* Slightly wider container */
+        max-width: 650px; 
         margin: auto;
-        border-radius: 10px;
-        overflow: visible; /* Allows buttons to position outside the main image box */
+        padding: 0 60px; /* NEW: Add padding to make space for the buttons */
+        box-sizing: border-box; /* NEW: Ensure padding is inside the width */
+        overflow: visible; 
     }
     
     .mySlides {
@@ -197,43 +198,43 @@
     }
     
     .mySlides img {
-    width: 100%;
-    height: auto;
-    max-height: 500px; /* Increased max-height slightly to give vertical images more room */
-    object-fit: contain; /* <-- FIX: Ensures the whole image is visible */
-    background: #fff; /* Ensures white padding around the image if the ratio is different */
-    display: block;
+        width: 100%;
+        height: auto;
+        max-height: 500px; 
+        object-fit: contain; 
+        background: #fff; 
+        display: block;
     }
 
-    /* FIX: Next & Previous buttons positioning and size */
+    /* Next & Previous buttons positioning and size */
     .prev, .next {
       cursor: pointer;
       position: absolute;
-      top: 40%; /* Move slightly higher */
-      width: 40px; /* Fixed smaller width */
-      height: 40px; /* Fixed smaller height */
-      padding: 0; /* Remove padding */
-      line-height: 40px; /* Vertically center the arrow */
+      top: 50%; /* Center vertically */
+      transform: translateY(-50%); /* NEW: Reliable vertical centering */
+      width: 40px; 
+      height: 40px; 
+      line-height: 40px; 
       text-align: center;
       color: white;
       font-weight: bold;
-      font-size: 20px; /* Larger arrow symbol */
+      font-size: 20px; 
       transition: 0.3s ease;
       user-select: none;
-      background-color: #7b1fa2; /* Solid purple */
-      border-radius: 50%; /* Make them round */
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      background-color: #7b1fa2; 
+      border-radius: 50%; 
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 5; /* Ensure buttons are always on top */
     }
 
     .prev {
-      left: -50px; /* Position outside the left of the image container */
+      left: 10px; /* NEW: Keep buttons near the edge of the padded area */
     }
 
     .next {
-      right: -50px; /* Position outside the right of the image container */
+      right: 10px; /* NEW: Keep buttons near the edge of the padded area */
     }
 
-    /* On hover, add a darker background */
     .prev:hover, .next:hover {
       background-color: #5d3f6a;
     }
@@ -252,12 +253,29 @@
     }
 
     /* --- MEDIA QUERY for smaller screens (e.g., mobile) --- */
-    @media screen and (max-width: 700px) {
-        .prev {
-            left: 10px; /* Move buttons back inside the container edges on mobile */
+    @media screen and (max-width: 600px) {
+        .slideshow-container {
+            padding: 0 15px; /* Reduce side padding for small screens */
+            max-width: 100%; /* Ensure it takes full width */
         }
-        .next {
-            right: 10px; /* Move buttons back inside the container edges on mobile */
+        .surprise-container {
+            padding: 15px; /* Reduce padding around the entire box */
+        }
+        .prev, .next {
+            top: 45%; /* Move slightly up if space is tight */
+            width: 30px; /* Smaller buttons on mobile */
+            height: 30px;
+            line-height: 30px;
+            font-size: 16px;
+            left: 5px; /* Keep buttons very close to the edge */
+            right: 5px;
+        }
+        .hero h1 {
+            font-size: 2rem; /* Smaller title font */
+        }
+        .tab-button {
+            padding: 8px 12px;
+            font-size: 0.85rem; /* Smaller tab labels */
         }
     }
   </style>
@@ -288,28 +306,115 @@
           <button class="message-tab-button" onclick="openMessageTab(event, 'Hopes')">Hopes For Your Year</button>
         </div>
 
-        <div id="Appreciation" class="message-tab-content active">
-          **Why I Appreciate You:**
-          <br>
-          [***Replace this text with your reasons for appreciation, like "Your unwavering loyalty," "Your amazing sense of humor," or "The way you always encourage me."***]
+        <div id="Appreciation" class="message-tab-content">
+          Why I Appreciate You?
           <br><br>
-          *This is the default text. Please customize it!*
+          I appreciate you for so many reasons, and sometimes I don’t say them out loud, so yeahhh…
+          <br><br>
+          ☺ You make me overthink things.<br>
+              Not in a bad way, but in a way that makes me reflect on myself. You make me notice my own thoughts, reactions, and feelings more deeply. You challenge me without even trying, and it pushes me to grow — most especially, it pushes me to keep fighting.
+          <br><br>
+          ☺ You understand me even when I’m hard to understand.<br>
+              And that’s rare. You get my moods, my silence, my confusion, and you don’t judge me for any of it. Instead, you try to meet me where I am. I’m honestly so blessed because of that.
+          <br><br>
+          ☺ You know how to comfort me in ways that actually work.<br>
+              You don’t force me to talk when I’m not ready, but you also don’t let me feel abandoned. You know when to listen quietly and when to speak up. Sometimes you comfort me without saying anything — just by being present, calm, and steady. It’s like you understand the kind of comfort I need at that exact moment.
+          <br><br>
+          ☺ You remind me that I’m not alone, even when I feel like I am.<br>
+              Especially now. I’m doing fine, getting better, but I still question myself sometimes. And that’s okay — in time I’ll be completely better. During our last call, I really appreciated what you did… telling me about our friends’ life updates. I thought I’d end this year not knowing how they are. I tried not to think about them, but there are moments when they suddenly enter my mind. Hearing about them from you meant more than you know.
+          <br><br>
+          ☺ You see things in me that I often fail to see in myself.<br>
+              You notice my strengths even when I’m busy focusing on my flaws. You remind me that I’m capable, kind, and stronger than I think. You make me believe I’m worth more than the doubts I carry. Sometimes you recognize the good in me long before I do — and that means everything.
+          <br><br>
+          ☺ You make life feel a little less scary and a lot more manageable.<br>
+              When things start to overwhelm me, you somehow simplify them without making me feel stupid. You help me breathe, slow down, and see things more clearly. The world feels less heavy with you around — like I’m not facing everything alone. Even on my worst days, you make things feel a little lighter.
+          <br><br>
+          Overall, I appreciate you simply because you’re you — and being around you makes my life better in ways I don’t always know how to describe.
         </div>
 
         <div id="Funniest" class="message-tab-content">
-          **The Best Bloopers:**
-          <br>
-          [***Replace this text with funny anecdotes or inside jokes you share. Keep it short and sweet!***]
+          The Best Bloopers
           <br><br>
-          *This is the default text. Please customize it!*
+          The best bloopers with you are always the ones we never planned,
+          the awkward jokes, the mistimed reactions, the “wait, what just happened?” moments that somehow turn into stories we laugh about for weeks.
+          <br><br>
+          They’re the moments where…
+          <br><br>
+          • We say the wrong thing, look at each other for half a second, and then burst into laughter we can’t even stop.<br>
+          • We misunderstand each other, get confused, then suddenly realize it and turn it into an inside joke only we would get.<br>
+          • We accidentally reveal some weird habit, stare in disbelief, and then just roll with it like it’s the most normal thing ever.<br>
+          • We trip over our words, our steps, or literally nothing and the embarrassment becomes a memory instead of a mistake.<br>
+          • We make plans that fall apart so badly they become funnier than the plan itself, and we still end up enjoying the mess together.<br>
+          <br><br>
+          The truth is<br>
+          Our best memories were never the perfect ones.<br>
+          They were the bloopers, the silly, chaotic, unexpected moments that proved just how comfortable we are with each other.<br>
+          <br><br>
+          Because here’s the real magic<br>
+          Even our mistakes, our clumsy moments, our unfiltered selves…<br>
+          they all turn into stories worth saving when they happen with you.<br>
+          <br><br>
+          And honestly?<br>
+          The best of the best bloopers were during those drunk nights,<br>
+          when we laughed so hard we couldn’t even remember what started it,<br>
+          when everything was stupidly funny,<br>
+          when the world felt lighter than ever.<br>
+          And the next morning, with messy hair, sore throats, and half-broken memories,<br>
+          we’d still end up laughing about the same things all over again.<br>
+          <br><br>
+          Those were the moments that felt endless.<br>
+          Those were the moments that made the night unforgettable.<br>
+          Those were the moments that live rent-free in my head,<br>
+          the kind you don’t just remember,<br>
+          you feel them all over again.
+          <br><br>
+          And I am so glad I experienced all this bloopers with you.
         </div>
         
         <div id="Hopes" class="message-tab-content">
-          **For Your Next Chapter:**
-          <br>
-          [***Replace this text with your birthday wishes and hopes for her year ahead, focusing on success, health, and happiness.***]
+          For Your Next Chapter
           <br><br>
-          *This is the default text. Please customize it!*
+          I don’t know how your year will unfold, and I can’t predict the things that will find their way into your life…<br>
+          but I do have hopes for you, real hopes, gentle ones, the kind that come from a place of care.
+          <br><br>
+          I hope this year is kind to you.<br>
+          Kinder than the last, softer around the edges, and filled with moments that remind you you’re still growing, still moving, still becoming someone you can be proud of.
+          <br><br>
+          I hope you give yourself the grace you often give to everyone else.<br>
+          You deserve that softness too, the patience, the forgiveness,<br>
+          the slow healing that doesn’t need to be rushed.
+          <br><br>
+          I hope you find reasons to laugh, really laugh, the way you do when you forget the world for a moment.<br>
+          I hope you find people, places, and memories that feel like home.<br>
+          And I hope you never lose the parts of yourself that make you 'you', the kindness, the honesty, the quiet strength you sometimes don’t even notice.
+          <br><br>
+          I hope this year brings you peace, not the kind that’s perfect or constant,<br>
+          but the kind that shows up in small moments...
+          a calm morning, a message you didn’t expect,<br>
+          a conversation that makes you breathe a little easier.
+          <br><br>
+          I hope you get the answers you’ve been searching for…<br>
+          and even if you don’t, I hope you learn that not knowing is okay too.<br>
+          That you can still move forward even with questions in your pocket.
+          <br><br>
+          I hope the people you love stay close, even from a distance.<br>
+          And I hope you feel supported, not just by others, but by yourself.
+          <br><br>
+          But more than anything, I hope this year reminds you of your worth.<br>
+          You’re someone who deserves good things, even on the days you doubt it.<br>
+          You deserve soft mornings, warm friendships, loud laughter, quiet peace, and love... in every form it comes.
+          <br><br>
+          So here’s to your year.<br>
+          A year of growth, healing, joy, and moments that feel like magic in the most ordinary ways.
+          <br><br>
+          No matter what happens, I hope you never forget this<br>
+          You’re capable.<br>
+          You’re deserving.<br>
+          You’re stronger than you think.<br>
+          And you’re someone I will always believe in.
+          <br><br>
+          Please watch yourself where ever you are, be careful and take care always kim.<br>
+          I LOVE YOU ALWAYS, IN ALL WAYS.
         </div>
       </div>
     </div>
@@ -547,32 +652,47 @@
         mainContent.style.visibility = 'visible';
         mainContent.style.opacity = '1';
         
-        document.querySelector('.message-tab-content.active').style.opacity = '1';
-        
-        showSlides(1, 'Ehhh');
+        // Highlight the first button, but DO NOT show the content initially.
+                const firstMessageButton = document.querySelector('.message-tab-buttons .message-tab-button');
+        if (firstMessageButton) {
+          firstMessageButton.classList.add('active');
+        }
+        
+        // Show the first photo tab (Keep this, as photos should be visible)
+        showSlides(1, 'Ehhh');
 
-      }, 1000); 
+      }, 1000); 
     }
 
     function openMessageTab(evt, tabName) {
-      var i, tabcontent, tablinks;
+      var i, tabcontent, tablinks;
 
-      tabcontent = document.getElementsByClassName("message-tab-content");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].classList.remove('active');
-        tabcontent[i].style.opacity = '0'; 
-      }
+      tabcontent = document.getElementsByClassName("message-tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove('active');
+        tabcontent[i].style.opacity = '0'; 
+      }
 
-      tablinks = document.getElementsByClassName("message-tab-button");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].classList.remove('active');
-      }
+      tablinks = document.getElementsByClassName("message-tab-button");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove('active');
+      }
 
-      const activeTab = document.getElementById(tabName);
-      activeTab.classList.add('active');
-      activeTab.style.opacity = '1';
-      evt.currentTarget.classList.add('active');
-    }
+      const activeTab = document.getElementById(tabName);
+      activeTab.classList.add('active');
+      activeTab.style.opacity = '1';
+      
+      // Only update the button's active class if a real event (click) occurred
+      if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add('active');
+      } else {
+        // If called from revealSurprise, find and activate the correct button
+        const buttonToActivate = document.querySelector(`.message-tab-buttons button:nth-child(${['Appreciation', 'Funniest', 'Hopes'].indexOf(tabName) + 1})`);
+        if (buttonToActivate) {
+          buttonToActivate.classList.add('active');
+        }
+      }
+    }
 
     function changePhoto(n, tabName) {
         showSlides(slideIndex[tabName] += n, tabName);
@@ -618,9 +738,7 @@
       slides[slideIndex[tabName]-1].style.display = "block";  
     }
     
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById('Appreciation').style.opacity = '1';
-    });
+    
   </script>
 </body>
 </html>
