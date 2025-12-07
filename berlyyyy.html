@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Special Surprise!</title>
+
+  <link rel="icon" type="image/jpeg" href="images/Cover.jpg">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: #fdf6ff; 
+      color: #333;
+      text-align: center;
+      transition: background 0.5s;
+      overflow-x: hidden; 
+    }
+
+    /* --- Landing Page (Splash Screen) Styles --- */
+    #landing-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #7b1fa2, #e1bee7); 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000; 
+      transition: opacity 1s ease-out;
+    }
+
+    #landing-page h1 {
+      color: white;
+      font-size: 4rem;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    #surprise-button {
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: 3px solid white;
+      background: transparent;
+      color: white;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s, transform 0.1s, color 0.3s;
+    }
+
+    #surprise-button:hover {
+      background: white;
+      color: #7b1fa2;
+      transform: scale(1.05);
+    }
+    
+    /* --- Main Birthday Content Styles (Hidden by default) --- */
+    #main-content {
+        padding: 20px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 1s ease-in;
+    }
+
+    /* --- General Styles --- */
+    .hero {
+      padding: 40px 20px 20px;
+    }
+    .hero h1 {
+      font-size: 3rem; 
+      margin-bottom: 10px;
+      color: #7b1fa2;
+      animation: sparkle 2s infinite; 
+    }
+    .hero p {
+      font-size: 1.2rem;
+      color: #5d3f6a;
+      font-weight: bold;
+    }
+    .surprise-container {
+      margin-top: 20px;
+      background: white;
+      border-radius: 20px; 
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 10px 30px rgba(123, 31, 162, 0.2);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+    
+    /* --- Message Tab Styles --- */
+    .message-tabs {
+        margin-bottom: 20px;
+    }
+    .message-tab-content {
+        display: none;
+        padding: 15px;
+        border: 1px solid #e1bee7;
+        border-radius: 10px;
+        line-height: 1.7;
+        text-align: left;
+        min-height: 150px; 
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+    .message-tab-content.active {
+        display: block;
+        opacity: 1;
+    }
+    .message-tab-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    .message-tab-button {
+        padding: 8px 15px;
+        border: none;
+        background: #f3e5f5;
+        color: #7b1fa2;
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+        font-size: 0.95rem;
+    }
+    .message-tab-button.active {
+        background: #7b1fa2;
+        color: white;
+    }
+    
+    /* --- Photo Tab/Slideshow Styles --- */
+    .photos-section h2 {
+      color: #7b1fa2;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e1bee7;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    .tab-buttons { /* Photo tab buttons */
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+    .tab-button {
+      padding: 10px 20px;
+      border: none;
+      background: #e1bee7;
+      color: #7b1fa2;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+    }
+    .tab-button:hover {
+      background: #ce93d8;
+    }
+    .tab-button.active {
+      background: #7b1fa2;
+      color: white;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+    }
+    
+    /* Photo Container & Slideshow */
+    .tab-content {
+        display: none; 
+        padding-top: 15px;
+    }
+    .tab-content.active {
+        display: block;
+    }
+    
+    .slideshow-container {
+        position: relative;
+        max-width: 650px; /* Slightly wider container */
+        margin: auto;
+        border-radius: 10px;
+        overflow: visible; /* Allows buttons to position outside the main image box */
+    }
+    
+    .mySlides {
+        display: none; 
+        text-align: center;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .mySlides img {
+    width: 100%;
+    height: auto;
+    max-height: 500px; /* Increased max-height slightly to give vertical images more room */
+    object-fit: contain; /* <-- FIX: Ensures the whole image is visible */
+    background: #fff; /* Ensures white padding around the image if the ratio is different */
+    display: block;
+    }
+
+    /* FIX: Next & Previous buttons positioning and size */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 40%; /* Move slightly higher */
+      width: 40px; /* Fixed smaller width */
+      height: 40px; /* Fixed smaller height */
+      padding: 0; /* Remove padding */
+      line-height: 40px; /* Vertically center the arrow */
+      text-align: center;
+      color: white;
+      font-weight: bold;
+      font-size: 20px; /* Larger arrow symbol */
+      transition: 0.3s ease;
+      user-select: none;
+      background-color: #7b1fa2; /* Solid purple */
+      border-radius: 50%; /* Make them round */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .prev {
+      left: -50px; /* Position outside the left of the image container */
+    }
+
+    .next {
+      right: -50px; /* Position outside the right of the image container */
+    }
+
+    /* On hover, add a darker background */
+    .prev:hover, .next:hover {
+      background-color: #5d3f6a;
+    }
+    
+    .photo-caption {
+        color: #5d3f6a;
+        font-size: 1rem;
+        padding: 10px 0;
+        font-style: italic;
+    }
+
+    /* --- Animation --- */
+    @keyframes sparkle {
+        0%, 100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+        50% { text-shadow: 0 0 15px #e1bee7; }
+    }
+
+    /* --- MEDIA QUERY for smaller screens (e.g., mobile) --- */
+    @media screen and (max-width: 700px) {
+        .prev {
+            left: 10px; /* Move buttons back inside the container edges on mobile */
+        }
+        .next {
+            right: 10px; /* Move buttons back inside the container edges on mobile */
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="landing-page">
+    <h1>You've Been Directed to a Secret Page...</h1>
+    <button id="surprise-button" onclick="revealSurprise()">
+        CLICK ME TO SEE THE SURPRISE! 🎁
+    </button>
+  </div>
+
+
+  <div id="main-content">
+    <div class="hero">
+      <h1>Happy Birthday, My Dear Berly! 🎉💜</h1>
+      <p>Prepare for a small trip down memory lane!</p>
+    </div>
+
+    <div class="surprise-container">
+      <h2>💌 My Special Messages for You</h2>
+
+      <div class="message-tabs">
+        <div class="message-tab-buttons">
+          <button class="message-tab-button active" onclick="openMessageTab(event, 'Appreciation')">Reasons I Appreciate You</button>
+          <button class="message-tab-button" onclick="openMessageTab(event, 'Funniest')">Our Funniest Memories</button>
+          <button class="message-tab-button" onclick="openMessageTab(event, 'Hopes')">Hopes For Your Year</button>
+        </div>
+
+        <div id="Appreciation" class="message-tab-content active">
+          **Why I Appreciate You:**
+          <br>
+          [***Replace this text with your reasons for appreciation, like "Your unwavering loyalty," "Your amazing sense of humor," or "The way you always encourage me."***]
+          <br><br>
+          *This is the default text. Please customize it!*
+        </div>
+
+        <div id="Funniest" class="message-tab-content">
+          **The Best Bloopers:**
+          <br>
+          [***Replace this text with funny anecdotes or inside jokes you share. Keep it short and sweet!***]
+          <br><br>
+          *This is the default text. Please customize it!*
+        </div>
+        
+        <div id="Hopes" class="message-tab-content">
+          **For Your Next Chapter:**
+          <br>
+          [***Replace this text with your birthday wishes and hopes for her year ahead, focusing on success, health, and happiness.***]
+          <br><br>
+          *This is the default text. Please customize it!*
+        </div>
+      </div>
+    </div>
+
+
+    <div class="surprise-container">
+      <div class="photos-section">
+        <h2>📸 Our Memories Together</h2>
+        
+        <div class="tab-buttons">
+          <button class="tab-button active" onclick="openPhotoTab(event, 'Ehhh', 1)">Just</button>
+          <button class="tab-button" onclick="openPhotoTab(event, 'Craziness', 1)">Chill ra mo ari</button>
+          <button class="tab-button" onclick="openPhotoTab(event, 'Group', 1)">The Squad</button>
+          <button class="tab-button" onclick="openPhotoTab(event, 'Loves', 1)">Guess?</button>
+        </div>
+
+        <div id="Ehhh" class="tab-content">
+            <div class="slideshow-container">
+                <div class="mySlides Ehhh">
+                    <img src="images/Group.JPG" alt="Ehhh 1">
+                    <div class="photo-caption">School event. Good students ta ari🎓</div>
+                </div>
+                <div class="mySlides Ehhh">
+                    <img src="images/Boo 4.jpg" alt="Ehhh 2">
+                    <div class="photo-caption">ngano mana berly? unsa naman say reklamo nimo ara??🥱</div>
+                </div>
+                <div class="mySlides Ehhh">
+                    <img src="images/Group 10.jpg" alt="Ehhh 3">
+                    <div class="photo-caption">City lights era✨</div>
+                </div>
+                <div class="mySlides Ehhh">
+                    <img src="images/Boo.JPG" alt="Ehhh 4">
+                    <div class="photo-caption">kinsa naman pud na inyong gi libak ha?🌝</div>
+                </div>
+                <div class="mySlides Ehhh">
+                    <img src="images/Group 13.gif" alt="Ehhh 5">
+                    <div class="photo-caption">tagay napud🍻</div>
+                </div>
+                <div class="mySlides Ehhh">
+                    <img src="images/Boo 9.jpg" alt="Ehhh 6">
+                    <div class="photo-caption">ohh unsa man?😳</div>
+                </div>
+                              
+                <a class="prev" onclick="changePhoto(-1, 'Ehhh')">&#10094;</a>
+                <a class="next" onclick="changePhoto(1, 'Ehhh')">&#10095;</a>
+            </div>
+        </div>
+
+        <div id="Craziness" class="tab-content">
+            <div class="slideshow-container">
+                <div class="mySlides Craziness">
+                    <img src="images/Group 2.JPG" alt="Craziness 1">
+                    <div class="photo-caption">Night chaos.😎</div>
+                </div>
+                <div class="mySlides Craziness">
+                    <img src="images/Take 1.jpg" alt="Craziness 2">
+                    <div class="photo-caption">Tulog pa more.💤</div>
+                </div>
+                <div class="mySlides Craziness">
+                    <img src="images/Take 2.jpg" alt="Craziness 3">
+                    <div class="photo-caption">Siksikan pero laban.🤭</div>
+                </div>
+                <div class="mySlides Craziness">
+                    <img src="images/Take 3.jpg" alt="Craziness 4">
+                    <div class="photo-caption">Nahulog sa kapalaran.👀</div>
+                </div>
+                <div class="mySlides Craziness">
+                    <img src="images/Take 4.jpg" alt="Craziness 5">
+                    <div class="photo-caption">Walay nahitabo… matulog gihapon.🙈</div>
+                </div> 
+                <div class="mySlides Craziness">
+                    <img src="images/Boo 1.jpg" alt="Craziness 5">
+                    <div class="photo-caption">Hehehehe mata nako🤪</div>
+                </div>                             
+                
+                <a class="prev" onclick="changePhoto(-1, 'Craziness')">&#10094;</a>
+                <a class="next" onclick="changePhoto(1, 'Craziness')">&#10095;</a>
+            </div>
+        </div>
+
+        <div id="Group" class="tab-content">
+            <div class="slideshow-container">
+                <div class="mySlides Group">
+                    <img src="images/Cover 1.jpg" alt="Squad 1">
+                    <div class="photo-caption">So pretty😍</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 1.JPG" alt="Squad 2">
+                    <div class="photo-caption">The best school party!🤩</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Boo 5.jpg" alt="Squad 3">
+                    <div class="photo-caption">atak wala mani lami oy, pataka lang gyud ni si berly panguha og pagkaon🤮</div>
+                </div>               
+                <div class="mySlides Group">
+                    <img src="images/Group 3.JPG" alt="Squad 4">
+                    <div class="photo-caption">Picture time😁</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 6.JPG" alt="Squad 5">
+                    <div class="photo-caption">Aw alams na unsay event ari, talisay=tagay😵</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 7.JPG" alt="Squad 6">
+                    <div class="photo-caption">First dagat🌊, when ulit?🤔</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Boo 3.jpg" alt="Squad 7">
+                    <div class="photo-caption">hmm🤨 ano yan berly???</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 8.JPG" alt="Squad 8">
+                    <div class="photo-caption">HAHAHAHAHA kuyog baboy ra ko ani nga time😅</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 9.JPG" alt="Squad 9">
+                    <div class="photo-caption">City lights + tagay = best memories👌</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Boo 6.jpg" alt="Squad 10">
+                    <div class="photo-caption">nice kaayo og tattoo🥵</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 11.JPG" alt="Squad 11">
+                    <div class="photo-caption">absent lage ka ari kim?🙄</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 12.jpeg" alt="Squad 12">
+                    <div class="photo-caption">bisag asa nalng gyud ta maabot ba😆</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Boo 8.jpg" alt="Squad 13">
+                    <div class="photo-caption">hatag fries kim bii🥺</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Boo 10.jpg" alt="Squad 14">
+                    <div class="photo-caption">chillin like a villain😈</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 14.jpeg" alt="Squad 15">
+                    <div class="photo-caption">Pandemic era😷</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 15.jpeg" alt="Squad 16">
+                    <div class="photo-caption">kinsa lay nabunalan ani😏</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 16.jpeg" alt="Squad 17">
+                    <div class="photo-caption">WOW! complete lage ta ari😍</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 17.jpeg" alt="Squad 18">
+                    <div class="photo-caption">asa ta pa ingon ani diay?🤔</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 18.gif" alt="Squad 19">
+                    <div class="photo-caption">hayssss sige nalng gyud tagay🍺</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 19.JPG" alt="Squad 20">
+                    <div class="photo-caption">hmm🤨 asa kaya ta ani?🤔</div>
+                </div>
+                <div class="mySlides Group">
+                    <img src="images/Group 20.JPG" alt="Squad 21">
+                    <div class="photo-caption">kapoya gyud ma cook oy😪</div>
+                </div>
+                
+                <a class="prev" onclick="changePhoto(-1, 'Group')">&#10094;</a>
+                <a class="next" onclick="changePhoto(1, 'Group')">&#10095;</a>
+            </div>
+        </div>
+        
+        <div id="Loves" class="tab-content">
+            <div class="slideshow-container">
+                <div class="mySlides Loves">
+                    <img src="images/Random.jpg" alt="Loves 1">
+                    <div class="photo-caption">Random event of berly🐷</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Duo 1.jpg" alt="Loves 2">
+                    <div class="photo-caption">ka sweet ninyo gud, hatag cokefloat bi🥤</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Boo 2.jpg" alt="Loves 3">
+                    <div class="photo-caption">oy oy unsay chika ara?🤔</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Group 4.JPG" alt="Loves 4">
+                    <div class="photo-caption">1st pool, when kaya next?👭</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/T-1.jpg" alt="Loves 5">
+                    <div class="photo-caption">kyutiessss mo ari berly🥰</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Boo 7.jpg" alt="Loves 6">
+                    <div class="photo-caption">sleep time😅</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Duo.jpg" alt="Loves 7">
+                    <div class="photo-caption">jump! jump! jump!🤙🏻</div>
+                </div>
+                <div class="mySlides Loves">
+                    <img src="images/Group 5.JPG" alt="Loves 8">
+                    <div class="photo-caption">swim time!🥽</div>
+                </div>
+                
+                
+                <a class="prev" onclick="changePhoto(-1, 'Loves')">&#10094;</a>
+                <a class="next" onclick="changePhoto(1, 'Loves')">&#10095;</a>
+            </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let slideIndex = {
+        'Ehhh': 1,
+        'Craziness': 1,
+        'Group': 1,
+        'Loves': 1
+    };
+
+    function revealSurprise() {
+      const landingPage = document.getElementById('landing-page');
+      const mainContent = document.getElementById('main-content');
+      
+      landingPage.style.opacity = '0';
+      
+      setTimeout(() => {
+        landingPage.style.display = 'none';
+        
+        mainContent.style.visibility = 'visible';
+        mainContent.style.opacity = '1';
+        
+        document.querySelector('.message-tab-content.active').style.opacity = '1';
+        
+        showSlides(1, 'Ehhh');
+
+      }, 1000); 
+    }
+
+    function openMessageTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+
+      tabcontent = document.getElementsByClassName("message-tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].classList.remove('active');
+        tabcontent[i].style.opacity = '0'; 
+      }
+
+      tablinks = document.getElementsByClassName("message-tab-button");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove('active');
+      }
+
+      const activeTab = document.getElementById(tabName);
+      activeTab.classList.add('active');
+      activeTab.style.opacity = '1';
+      evt.currentTarget.classList.add('active');
+    }
+
+    function changePhoto(n, tabName) {
+        showSlides(slideIndex[tabName] += n, tabName);
+    }
+
+    function openPhotoTab(evt, tabName, n) {
+        var i, tabcontent, tablinks;
+
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove('active');
+        }
+
+        tablinks = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove('active');
+        }
+
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+        
+        slideIndex[tabName] = n;
+        showSlides(n, tabName);
+    }
+    
+    function showSlides(n, tabName) {
+      let i;
+      let slides = document.getElementsByClassName(tabName); 
+
+      if (slides.length === 0) return; 
+
+      if (n > slides.length) {
+          slideIndex[tabName] = 1;
+      }    
+      if (n < 1) {
+          slideIndex[tabName] = slides.length;
+      }
+
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+      }
+      
+      slides[slideIndex[tabName]-1].style.display = "block";  
+    }
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById('Appreciation').style.opacity = '1';
+    });
+  </script>
+</body>
+</html>
